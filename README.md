@@ -1,78 +1,140 @@
-# agendaeventos
+# 📌 Sistema de Gerenciamento de Eventos
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Este projeto foi desenvolvido como parte de um **desafio técnico para Desenvolvedor Java**, com o objetivo de implementar um sistema CRUD para gerenciamento de instituições e eventos, com controle automático de vigência.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+---
 
-## Running the application in dev mode
+## 🚀 Tecnologias Utilizadas
 
-You can run your application in dev mode that enables live coding using:
+### Backend
+- Java 17+
+- Quarkus
+- Hibernate ORM (Panache)
+- REST API
+- Scheduler (Agendamento de tarefas)
 
-```shell script
+### Banco de Dados
+- MySQL
+
+### Outros
+- DTO Pattern
+- Arquitetura em Camadas
+- Validações customizadas
+
+---
+
+## 📚 Descrição do Sistema
+
+O sistema permite:
+
+- Cadastrar instituições
+- Cadastrar eventos vinculados a uma instituição
+- Definir período de vigência (data inicial e final)
+- Ativar e inativar eventos automaticamente
+- Realizar operações CRUD completas
+
+O status do evento é controlado automaticamente com base na data atual.
+
+---
+
+## 🏗️ Arquitetura
+
+O projeto segue uma arquitetura em camadas:
+
+
+Principais módulos:
+
+- `entity` → Mapeamento das entidades
+- `controller` → Endpoints REST
+- `service` → Regras de negócio
+- `dto` → Transferência de dados
+- `validation` → Validações
+- `scheduling` → Tarefas agendadas
+
+---
+
+## 📊 Modelo de Dados
+
+### Instituição
+| Campo | Tipo   |
+|-------|--------|
+| id    | Long   |
+| nome  | String |
+| tipo  | String |
+
+### Evento
+| Campo       | Tipo    |
+|-------------|---------|
+| id          | Long    |
+| nome        | String  |
+| dataInicial | Date    |
+| dataFinal   | Date    |
+| ativo       | Boolean |
+| instituicao | FK      |
+
+Relacionamento:
+- Uma instituição pode possuir vários eventos (OneToMany)
+
+---
+
+## 🔗 Endpoints Principais
+
+### Instituições
+
+| Método | Endpoint              | Descrição                 |
+|--------|-----------------------|---------------------------|
+| GET    | /institutions         | Listar instituições       |
+
+Como o objetivo principal do projeto estava nos controle dos eventos, as instituições são criadas por padrão durante a inicialização do projeto.
+
+### Eventos
+
+| Método | Endpoint              | Descrição                 |
+|--------|-----------------------|---------------------------|
+| GET    | /events               | Listar eventos             |
+| POST   | /events               | Criar evento               |
+| PUT    | /events/{id}          | Atualizar evento           |
+| DELETE | /events/{id}          | Remover evento             |
+
+---
+
+## ⏱️ Agendamento Automático
+
+O sistema utiliza tarefas agendadas para:
+
+- Ativar eventos quando a data inicial é atingida
+- Inativar eventos após a data final
+
+Classe responsável:
+Executa periodicamente para validar a vigência dos eventos.
+
+---
+
+## ✅ Validações
+
+As principais validações incluem:
+
+- Data inicial menor que data final
+- Campos obrigatórios
+- Vínculo válido com instituição
+- Regras de negócio centralizadas
+
+## ▶️ Como Executar o Projeto
+
+### Pré-requisitos
+
+- Java 17+
+- Maven
+- Docker (para container do MySQL)
+
+### Passos
+
+```bash
+# Clonar o projeto
+git clone https://github.com/LF4ver0/agendaeventos.git
+
+# Entrar no diretório
+cd projeto
+
+# Executar
 ./mvnw quarkus:dev
-```
-
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
-
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
-```
-
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/agendaeventos-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-- Hibernate ORM with Panache ([guide](https://quarkus.io/guides/hibernate-orm-panache)): Simplify your persistence code for Hibernate ORM via the active record or the repository pattern
-- JDBC Driver - MySQL ([guide](https://quarkus.io/guides/datasource)): Connect to the MySQL database via JDBC
-
-## Provided Code
-
-### Hibernate ORM
-
-Create your first JPA entity
-
-[Related guide section...](https://quarkus.io/guides/hibernate-orm)
-
-[Related Hibernate with Panache section...](https://quarkus.io/guides/hibernate-orm-panache)
-
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
