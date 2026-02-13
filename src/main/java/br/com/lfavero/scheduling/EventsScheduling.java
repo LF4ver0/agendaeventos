@@ -15,16 +15,13 @@ import java.util.logging.Logger;
 
 @ApplicationScoped
 public class EventsScheduling {
-//    @Inject
-//    EventsService eventsService;
 
-    private static final Logger LOG =
-            Logger.getLogger(String.valueOf(EventsScheduling.class));
+    private static final Logger LOG = Logger.getLogger(String.valueOf(EventsScheduling.class));
 
-    @Scheduled(every = "25s")
-    //@Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     void updateStatus() {
+
         LOG.info("Scheduler Iniciando: " + LocalDateTime.now());
 
         LocalDate today = LocalDate.now();
